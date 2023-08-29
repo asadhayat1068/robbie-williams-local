@@ -1,46 +1,120 @@
-import prisma from '../lib/prisma'
+import prisma from "../lib/prisma";
 
 async function main() {
   const response = await Promise.all([
-    prisma.users.upsert({
-      where: { email: 'rauchg@vercel.com' },
+    prisma.user.upsert({
+      where: { email: "asad@caduceus.foundation" },
       update: {},
       create: {
-        name: 'Guillermo Rauch',
-        email: 'rauchg@vercel.com',
-        image:
-          'https://pbs.twimg.com/profile_images/1576257734810312704/ucxb4lHy_400x400.jpg',
+        email: "asad@caduceus.foundation",
+        orders: {
+          create: [
+            {
+              orderId: "ord1",
+              tickets: {
+                create: [
+                  {
+                    ticketId: "tic1",
+                    email: "asad@caduceus.foundation",
+                  },
+                  {
+                    ticketId: "tic2",
+                    email: "asad+1@caduceus.foundation",
+                  },
+                ],
+              },
+            },
+            {
+              orderId: "ord2",
+              tickets: {
+                create: [
+                  {
+                    ticketId: "tic3",
+                    email: "asad@caduceus.foundation",
+                  },
+                  {
+                    ticketId: "tic4",
+                    email: "asad+1@caduceus.foundation",
+                  },
+                ],
+              },
+            },
+          ],
+        },
       },
     }),
-    prisma.users.upsert({
-      where: { email: 'lee@vercel.com' },
+
+    prisma.user.upsert({
+      where: { email: "giulio@caduceus.foundation" },
       update: {},
       create: {
-        name: 'Lee Robinson',
-        email: 'lee@vercel.com',
-        image:
-          'https://pbs.twimg.com/profile_images/1587647097670467584/adWRdqQ6_400x400.jpg',
+        email: "giulio@caduceus.foundation",
+        orders: {
+          create: [
+            {
+              orderId: "ord3",
+              tickets: {
+                create: [
+                  {
+                    ticketId: "tic5",
+                    email: "giulio@caduceus.foundation",
+                  },
+                  {
+                    ticketId: "tic6",
+                    email: "giulio+1@caduceus.foundation",
+                  },
+                  {
+                    ticketId: "tic7",
+                    email: "giulio+2@caduceus.foundation",
+                  },
+                ],
+              },
+            },
+          ],
+        },
       },
     }),
-    await prisma.users.upsert({
-      where: { email: 'stey@vercel.com' },
+
+    // mark buys tickets for himself first
+    prisma.user.upsert({
+      where: { email: "mark@caduceus.foundation" },
       update: {},
       create: {
-        name: 'Steven Tey',
-        email: 'stey@vercel.com',
-        image:
-          'https://pbs.twimg.com/profile_images/1506792347840888834/dS-r50Je_400x400.jpg',
+        email: "mark@caduceus.foundation",
+        orders: {
+          create: [
+            {
+              orderId: "ord4",
+              tickets: {
+                create: [
+                  {
+                    ticketId: "tic8",
+                    email: "mark@caduceus.foundation",
+                  },
+                  {
+                    ticketId: "tic9",
+                    email: "mark@caduceus.foundation", // mark buys tickets for himself first
+                  },
+                  {
+                    ticketId: "tic10",
+                    email: "mark@caduceus.foundation", // mark buys tickets for himself first
+                  },
+                ],
+              },
+            },
+          ],
+        },
       },
     }),
-  ])
-  console.log(response)
+  ]);
+  console.log(response);
 }
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

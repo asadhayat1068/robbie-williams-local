@@ -11,10 +11,30 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
-model users {
-  id        Int      @id @default(autoincrement())
-  name      String
+model User {
+  id        String   @id @default(uuid())
   email     String   @unique
-  image     String
+  orders    Order[]
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id        String   @id @default(uuid())
+  orderId   String   @unique // External OrderId from eventbrite API
+  userId    String // FK to User model
+  user      User     @relation(fields: [userId], references: [id])
+  tickets   Ticket[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Ticket {
+  id        String   @id @default(uuid())
+  ticketId  String   @unique // External TicketId from eventbrite API
+  email     String // Email of the person the ticket was bought for
+  orderId   String // FK to Order model
+  order     Order    @relation(fields: [orderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

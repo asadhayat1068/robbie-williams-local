@@ -8,31 +8,44 @@
     "dev": "prisma generate && next dev",
     "build": "prisma generate && prisma db push && prisma db seed && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next node_modules ./package-lock.json && npm install"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
   },
   "dependencies": {
+    "@etherspot/prime-sdk": "^1.1.8",
     "@prisma/client": "^5.2.0",
     "@types/node": "20.5.6",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
+    "@web3auth/base": "^6.1.7",
+    "@web3auth/metamask-adapter": "^6.1.7",
+    "@web3auth/modal": "^6.1.8",
+    "@web3auth/torus-wallet-connector-plugin": "^6.1.7",
+    "@web3auth/wallet-connect-v1-adapter": "^6.1.8",
     "autoprefixer": "10.4.15",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
+    "ethers": "^6.7.1",
     "ms": "^2.1.3",
     "next": "13.4.19",
     "postcss": "8.4.28",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "rxjs": "^7.8.1",
     "tailwindcss": "3.3.3",
     "ts-node": "^10.9.1",
-    "typescript": "5.2.2"
+    "typescript": "^4.9.5",
+    "web3": "^4.1.1"
   },
   "devDependencies": {
     "@types/ms": "^0.7.31",
+    "buffer": "^6.0.3",
     "prisma": "^5.2.0",
+    "process": "^0.11.10",
+    "react-app-rewired": "^2.2.1",
     "turbo": "^1.10.13"
   }
 }

@@ -5,8 +5,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "prisma generate && next dev",
-    "build": "prisma generate && prisma db push && prisma db seed && next build",
+    "dev": "prisma generate --no-engine && next dev",
+    "build": "prisma generate --no-engine && prisma db push && prisma db seed && next build",
     "start": "next start",
     "lint": "next lint",
     "clean": "rm -rf .next node_modules ./package-lock.json && npm install"
@@ -43,6 +43,7 @@
   "devDependencies": {
     "@types/ms": "^0.7.31",
     "buffer": "^6.0.3",
+    "encoding": "^0.1.13",
     "prisma": "^5.2.0",
     "process": "^0.11.10",
     "react-app-rewired": "^2.2.1",

@@ -9,7 +9,7 @@
     "build": "prisma generate && prisma db push && prisma db seed && next build",
     "start": "next start",
     "lint": "next lint",
-    "clean": "rm -rf .next node_modules ./package-lock.json && npm install"
+    "clean": "rm -rf .next node_modules ./package-lock.json pnpm-lock.yaml && npm install"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

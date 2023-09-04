@@ -15,7 +15,7 @@ datasource db {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
-  address   String?
+  address   String   @default("0x0000000000000000000000000000000000000000")
   orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

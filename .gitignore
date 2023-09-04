@@ -39,3 +39,4 @@ yarn-error.log*
 *.tsbuildinfo
 package-lock.json
 pnpm-lock.yaml
+prisma/migrations/20230904055238_added_address_field/migration.sql

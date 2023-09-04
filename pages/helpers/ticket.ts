@@ -1,6 +1,6 @@
 import axios from "axios";
 import { PRIVATE_API_TOKEN } from "../configs/app";
-import { registerUser, userExists } from "./user";
+import { addUser, userExists } from "./user";
 import { User } from "../types/User.type";
 
 export const processTicket = async (data: any) => {
@@ -20,9 +20,10 @@ export const processTicket = async (data: any) => {
             }
             const userExist = await userExists(user);
             if (!userExist) {
-                registerUser(user);
+                addUser(user);
             }
             // TODO: handle ticket entry
+            
             // TODO: Ticket bought, mint NFT
         } else {
             return { error: "User not found"}

@@ -11,7 +11,7 @@ export const userExists = async (user: User) => {
     return !!resp;
 }
 
-export const registerUser = async (user: User) => {
+export const addUser = async (user: User) => {
     try {
         await prisma.user.create({
             data: user

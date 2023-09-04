@@ -36,7 +36,7 @@ export default function Web3AuthApp() {
           clientId,
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: "0x1",
+            chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
             rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
           },
           web3AuthNetwork: "cyan",
@@ -83,7 +83,7 @@ export default function Web3AuthApp() {
           web3AuthNetwork: "cyan",
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: "0x1",
+            chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
             rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
           },
         });
@@ -92,7 +92,7 @@ export default function Web3AuthApp() {
           sessionTime: 86400, // 1 day in seconds
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: "0x1",
+            chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
             rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
           },
           web3AuthNetwork: "cyan",
@@ -110,11 +110,10 @@ export default function Web3AuthApp() {
 
         setWeb3auth(web3auth);
         setProvider(web3auth.provider);
+        console.log("ELLOOOO");
 
         await web3auth.initModal();
         if (web3auth.connected) {
-          console.log("ELLOOOO");
-
           setLoggedIn(true);
           if (!web3auth.provider) {
             throw new Error("Provider not initialized");
@@ -124,12 +123,15 @@ export default function Web3AuthApp() {
 
           // @ts-ignore
           const etherspotPrimeSdk = new PrimeSdk(mappedProvider, {
-            chainId: 1,
+            chainId: Number(process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX),
           });
-          const address = await etherspotPrimeSdk.getCounterFactualAddress();
-          const balances2 = await etherspotPrimeSdk.getAccountBalances();
-          setBalances(balances2);
-          setWalletAddress(address);
+
+          console.log(etherspotPrimeSdk.state);
+
+          // const address = await etherspotPrimeSdk.getCounterFactualAddress();
+          // const balances2 = await etherspotPrimeSdk.getAccountBalances();
+          // setBalances(balances2);
+          // setWalletAddress(address);
         }
       } catch (error) {
         console.error(error);

@@ -1,7 +1,8 @@
 import HelloComponent from "@/components/HelloWorld";
-import Table from "@/components/table";
+// import Table from "@/components/table";
 import React from "react";
-import Web3AuthApp from "./web3Auth";
+import Web3Auth2 from "./Web3Auth2";
+
 
 function HomePage() {
   return (
@@ -10,9 +11,9 @@ function HomePage() {
       <HelloComponent />
       <br />
       <h1 className="text-lg text-center">Web3Auth</h1>
-      <Web3AuthApp />
+      <Web3Auth2 />
       <h1 className="text-lg text-center">DB Test</h1>
-      <Table />
+      {/* <Table /> */}
     </div>
   );
 }

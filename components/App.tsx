@@ -90,7 +90,7 @@ const App = () => {
 
     // @ts-ignore
     const etherspotPrimeSdk = new PrimeSdk(mappedProvider, {
-      chainId: ethers.BigNumber.from(process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX as string).toNumber(),
+      chainId: 0x1// ethers.BigNumber.from(process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX as string).toNumber(),
     });
     const address = await etherspotPrimeSdk.getCounterFactualAddress();
     if (!address) {
@@ -98,9 +98,9 @@ const App = () => {
       setIsConnecting(false);
       return;
     }
+    
     const balances2 = await etherspotPrimeSdk.getAccountBalances();
     setBalances(balances2);
-
     setWalletAddress(address);
     setIsConnecting(false);
   };
@@ -109,7 +109,7 @@ const App = () => {
     <div>
       {walletAddress && (
         <div>
-          <div>Your address on Ethereum blockchain:</div>
+          <div>Your address on Ethereum blockchain: </div>
           <div>
             <strong>{walletAddress}</strong>
           </div>

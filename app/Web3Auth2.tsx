@@ -1,33 +1,34 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-shadow */
 "use client";
-
-import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from "@web3auth/base";
-import { MetamaskAdapter } from "@web3auth/metamask-adapter";
+import { useEffect, useState } from "react";
 import { Web3Auth } from "@web3auth/modal";
-import { TorusWalletAdapter } from "@web3auth/torus-evm-adapter";
-import { PrimeSdk, Web3WalletProvider } from "@etherspot/prime-sdk";
-// import RPC from ".api/ethersRPC"; // for using ethers.js
+import { CHAIN_NAMESPACES, IProvider } from "@web3auth/base";
+import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import "./App.css";
+import RPC from "./web3RPC"; // for using web3.js
+//import RPC from "./ethersRPC"; // for using ethers.js
+
 // Plugins
 import { TorusWalletConnectorPlugin } from "@web3auth/torus-wallet-connector-plugin";
+
 // Adapters
-import { WalletConnectV1Adapter } from "@web3auth/wallet-connect-v1-adapter";
-import { useEffect, useState } from "react";
-import RPC from "./web3RPC";
-import { ethers } from "ethers";
-import Table from "@/components/table";
-import HelloComponent from "@/components/HelloWorld";
 
-const clientId = "BEglQSgt4cUWcj6SKRdu5QkOXTsePmMcusG5EAoyjyOYKlVRjIF1iCNnMOTfpzCiunHRrMui8TIwQPXdkQ8Yxuk"; // get from https://dashboard.web3auth.io
+// import { WalletConnectV1Adapter } from "@web3auth/wallet-connect-v1-adapter";
+import {
+  WalletConnectV2Adapter,
+  getWalletConnectV2Settings,
+} from "@web3auth/wallet-connect-v2-adapter";
+import { MetamaskAdapter } from "@web3auth/metamask-adapter";
+import { TorusWalletAdapter } from "@web3auth/torus-evm-adapter";
 
-export default function Web3AuthApp() {
+const clientId =
+  "BEglQSgt4cUWcj6SKRdu5QkOXTsePmMcusG5EAoyjyOYKlVRjIF1iCNnMOTfpzCiunHRrMui8TIwQPXdkQ8Yxuk"; // get from https://dashboard.web3auth.io
+
+function App() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
-  const [torusPlugin, setTorusPlugin] = useState<TorusWalletConnectorPlugin | null>(null);
-  const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null);
+  const [torusPlugin, setTorusPlugin] =
+    useState<TorusWalletConnectorPlugin | null>(null);
+  const [provider, setProvider] = useState<IProvider | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
-  const [balances, setBalances] = useState({});
 
   useEffect(() => {
     const init = async () => {
@@ -36,11 +37,64 @@ export default function Web3AuthApp() {
           clientId,
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
+            chainId: "0x1",
             rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
+          },
+          // uiConfig refers to the whitelabeling options, which is available only on Growth Plan and above
+          // Please remove this parameter if you're on the Base Plan
+          uiConfig: {
+            appName: "W3A",
+            // appLogo: "https://web3auth.io/images/w3a-L-Favicon-1.svg", // Your App Logo Here
+            theme: {
+              primary: "red",
+            },
+            mode: "dark",
+            logoLight: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
+            logoDark: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
+            defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl
+            loginGridCol: 3,
+            primaryButton: "externalLogin", // "externalLogin" | "socialLogin" | "emailLogin"
           },
           web3AuthNetwork: "cyan",
         });
+
+        const openloginAdapter = new OpenloginAdapter({
+          loginSettings: {
+            mfaLevel: "optional",
+          },
+          adapterSettings: {
+            uxMode: "redirect", // "redirect" | "popup"
+            whiteLabel: {
+              logoLight: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
+              logoDark: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
+              defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl
+              // dark: false, // whether to enable dark mode. defaultValue: false
+            },
+            mfaSettings: {
+              deviceShareFactor: {
+                enable: true,
+                priority: 1,
+                mandatory: true,
+              },
+              backUpShareFactor: {
+                enable: true,
+                priority: 2,
+                mandatory: false,
+              },
+              socialBackupFactor: {
+                enable: true,
+                priority: 3,
+                mandatory: false,
+              },
+              passwordFactor: {
+                enable: true,
+                priority: 4,
+                mandatory: false,
+              },
+            },
+          },
+        });
+        web3auth.configureAdapter(openloginAdapter);
 
         // plugins and adapters are optional and can be added as per your requirement
         // read more about plugins here: https://web3auth.io/docs/sdk/web/plugins/
@@ -65,25 +119,36 @@ export default function Web3AuthApp() {
         // read more about adapters here: https://web3auth.io/docs/sdk/web/adapters/
 
         // adding wallet connect v1 adapter
+        // const walletConnectV1Adapter = new WalletConnectV1Adapter({
+        //   adapterSettings: {
+        //     bridge: "https://bridge.walletconnect.org",
+        //   },
+        //   clientId,
+        // });
 
-        const walletConnectV1Adapter = new WalletConnectV1Adapter({
-          adapterSettings: {
-            bridge: "https://bridge.walletconnect.org",
-          },
-          clientId,
+        // web3auth.configureAdapter(walletConnectV1Adapter);
+
+        // adding wallet connect v2 adapter
+        const defaultWcSettings = await getWalletConnectV2Settings(
+          "eip155",
+          [1],
+          "04309ed1007e77d1f119b85205bb779d"
+        );
+        const walletConnectV2Adapter = new WalletConnectV2Adapter({
+          adapterSettings: { ...defaultWcSettings.adapterSettings },
+          loginSettings: { ...defaultWcSettings.loginSettings },
         });
 
-        web3auth.configureAdapter(walletConnectV1Adapter);
+        web3auth.configureAdapter(walletConnectV2Adapter);
 
         // adding metamask adapter
-
         const metamaskAdapter = new MetamaskAdapter({
           clientId,
           sessionTime: 3600, // 1 hour in seconds
           web3AuthNetwork: "cyan",
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
+            chainId: "0x1",
             rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
           },
         });
@@ -92,7 +157,7 @@ export default function Web3AuthApp() {
           sessionTime: 86400, // 1 day in seconds
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
+            chainId: "0x1",
             rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
           },
           web3AuthNetwork: "cyan",
@@ -109,29 +174,40 @@ export default function Web3AuthApp() {
         web3auth.configureAdapter(torusWalletAdapter);
 
         setWeb3auth(web3auth);
-        setProvider(web3auth.provider);
-        console.log("ELLOOOO");
 
         await web3auth.initModal();
+
+        // await web3auth.initModal({
+        //   modalConfig: {
+        //     [WALLET_ADAPTERS.OPENLOGIN]: {
+        //       label: "openlogin",
+        //       loginMethods: {
+        //         // Disable facebook and reddit
+        //         facebook: {
+        //           name: "facebook",
+        //           showOnModal: false
+        //         },
+        //         reddit: {
+        //           name: "reddit",
+        //           showOnModal: false
+        //         },
+        //         // Disable email_passwordless and sms_passwordless
+        //         email_passwordless: {
+        //           name: "email_passwordless",
+        //           showOnModal: false
+        //         },
+        //         sms_passwordless: {
+        //           name: "sms_passwordless",
+        //           showOnModal: false
+        //         }
+        //       }
+        //     }
+        //   }
+        // });
+        setProvider(web3auth.provider);
+
         if (web3auth.connected) {
           setLoggedIn(true);
-          if (!web3auth.provider) {
-            throw new Error("Provider not initialized");
-          }
-          const mappedProvider = new Web3WalletProvider(web3auth.provider!);
-          await mappedProvider.refresh();
-
-          // @ts-ignore
-          const etherspotPrimeSdk = new PrimeSdk(mappedProvider, {
-            chainId: Number(process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX),
-          });
-
-          console.log(etherspotPrimeSdk.state);
-
-          // const address = await etherspotPrimeSdk.getCounterFactualAddress();
-          // const balances2 = await etherspotPrimeSdk.getAccountBalances();
-          // setBalances(balances2);
-          // setWalletAddress(address);
         }
       } catch (error) {
         console.error(error);
@@ -148,19 +224,6 @@ export default function Web3AuthApp() {
     }
     const web3authProvider = await web3auth.connect();
     setProvider(web3authProvider);
-    const mappedProvider = new Web3WalletProvider(web3auth.provider!);
-    await mappedProvider.refresh();
-
-    // @ts-ignore
-    const etherspotPrimeSdk = new PrimeSdk(mappedProvider, {
-      chainId: 1,
-    });
-    const address = await etherspotPrimeSdk.getCounterFactualAddress();
-    const balances2 = await etherspotPrimeSdk.getAccountBalances();
-    setBalances(balances2);
-    setWalletAddress(address);
-
-    setLoggedIn(true);
   };
 
   const authenticateUser = async () => {
@@ -302,7 +365,16 @@ export default function Web3AuthApp() {
     uiConsole(privateKey);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // const changeNetwork = async () => {
+  //   if (!provider) {
+  //     uiConsole("provider not initialized yet");
+  //     return;
+  //   }
+  //   const rpc = new RPC(provider);
+  //   const privateKey = await rpc.getPrivateKey();
+  //   uiConsole(privateKey);
+  // };
+
   function uiConsole(...args: any[]): void {
     const el = document.querySelector("#console>p");
     if (el) {
@@ -313,9 +385,6 @@ export default function Web3AuthApp() {
   const loggedInView = (
     <>
       <div className="flex-container">
-        <div>{walletAddress}</div>
-        <div>{JSON.stringify(balances)}</div>
-
         <div>
           <button onClick={getUserInfo} className="card">
             Get User Info
@@ -362,13 +431,13 @@ export default function Web3AuthApp() {
           </button>
         </div>
         <div>
-          <button onClick={sendTransaction} className="card">
-            Send Transaction
+          <button onClick={signMessage} className="card">
+            Sign Message
           </button>
         </div>
         <div>
-          <button onClick={signMessage} className="card">
-            Sign Message
+          <button onClick={sendTransaction} className="card">
+            Send Transaction
           </button>
         </div>
         <div>
@@ -400,14 +469,14 @@ export default function Web3AuthApp() {
         <a target="_blank" href="http://web3auth.io/" rel="noreferrer">
           Web3Auth{" "}
         </a>
-        & Next.js 13 Ethereum Example
+        & ReactJS Ethereum Example
       </h1>
 
       <div className="grid">{loggedIn ? loggedInView : unloggedInView}</div>
 
       <footer className="footer">
         <a
-          href="https://github.com/Web3Auth/examples/tree/main/web-modal-sdk/evm/nextjs-evm-modal-example"
+          href="https://github.com/Web3Auth/examples/tree/main/web-modal-sdk/evm/react-evm-modal-example"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -417,3 +486,5 @@ export default function Web3AuthApp() {
     </div>
   );
 }
+
+export default App;

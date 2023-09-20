@@ -5,6 +5,8 @@ import { addUser, getUser, userExists } from "./user";
 import { User } from "../types/User.type";
 import { Order } from "../types/Order.type";
 import { Ticket } from "../types/Ticket.type";
+import { mintTicket } from "./provider";
+import { AddressZero } from "@etherspot/prime-sdk/dist/sdk/common";
 
 export const processTicket = async (data: any) => {
     // data = JSON.parse('{"config":{"endpoint_url":"https://event-brite.vercel.app/api/ticket","user_id":"1731318251883","action":"order.placed","webhook_id":"11719981"},"api_url":"https://www.eventbriteapi.com/v3/orders/7516439669/"}');
@@ -15,7 +17,7 @@ export const processTicket = async (data: any) => {
         const resp = await axios.get(api_url);
         const ebOrder = resp.data;
         if (ebOrder.status === 'placed') {
-            console.log("Order placed", ebOrder);
+            // console.log("Order placed", ebOrder);
             const user: User = {
                 name: ebOrder.name,
                 email: ebOrder.email
@@ -27,7 +29,7 @@ export const processTicket = async (data: any) => {
             } else {
                 dbUser = await getUser(user);
             }
-            // handle order entry
+            // // handle order entry
             if (!dbUser) {
                 throw new Error("User not found");
             }
@@ -37,12 +39,12 @@ export const processTicket = async (data: any) => {
                 userId: dbUser.id
             }
             const dbOrder = await prisma.order.create({
-                data: { 
+                data: {
                     orderId: order.id,
                     userId: dbUser.id
                 }
-            });            
-            // handle ticket entry
+            });
+            // // handle ticket entry
             const ticket: Ticket = {
                 ticketId: ebOrder.id,
                 orderId: dbOrder.id,
@@ -52,9 +54,10 @@ export const processTicket = async (data: any) => {
             const dbTicket = await prisma.ticket.create({
                 data: ticket
             });
-            console.log(dbTicket);
-            // TODO: Ticket bought, mint NFT
-            console.log("Ticket bought, mint NFT");
+            // Mint Ticket, if user has address
+            if (dbUser?.address && dbUser?.address != AddressZero) {
+                mintTicket(dbUser.address,1, 467458, dbUser.name, dbUser.email);
+            }
 
             return { success: true, message: "Order placed. Minting NFT." };
 

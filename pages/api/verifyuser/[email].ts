@@ -16,7 +16,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     });
     if (!user) {
-        res.status(404).json({error: "User not found"});
+        res.status(404).json({
+            success: false,
+            error: "User not found"
+        });
         return;
     }
     const { name, address } = user;

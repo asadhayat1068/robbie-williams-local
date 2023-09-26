@@ -31,7 +31,7 @@ export const mintTicket = async (
       name,
       email
     );
-    const txReceipt = await tx.wait(3);
+    const txReceipt = await tx.wait();
     const eventArgs = txReceipt.logs[0].args;
     const tokenId = eventArgs[2].toString();
     await saveTokenData(ticketId, tx.hash, tokenId);

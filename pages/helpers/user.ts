@@ -1,32 +1,46 @@
 import prisma from "@/lib/prisma";
-import { User } from "../types/User.type";
+import { ZeroAddress } from "ethers";
 
-export const userExists = async (user: User) => {
-    const resp = await getUser(user);
-    return !!resp;
-}
+export const createUser = async (authUser: any) => {
+  const { email, name } = authUser;
+  const { address } = authUser?.wallets ? authUser.wallets[0] : ZeroAddress;
+  const user = await prisma.user.create({
+    data: {
+      email,
+      name,
+      address,
+    },
+  });
+  return user;
+};
 
-export const addUser = async (user: User) => {
-    try {
-        const dbUser = await prisma.user.create({
-            data: user
-        });
-        return dbUser;
-    } catch (error) {
-        throw new Error(`Error registering user. ${error}`);
-    }
-}
+export const updateUser = async (authUser: any) => {
+  const { email, name } = authUser;
+  const { address } = authUser?.wallets ? authUser.wallets[0] : ZeroAddress;
+  const user = await prisma.user.update({
+    where: {
+      email,
+    },
+    data: {
+      name,
+      address,
+    },
+  });
+  return user;
+};
 
-export const getUser = async (user: User) => {
-    try {
-        const { email } = user;
-        const dbUser = await prisma.user.findFirst({
-            where: {
-                email: email
-            }
-        });
-        return dbUser;
-    } catch (error) {
-        throw new Error(`Error fetching user. ${error}`);
-    }
-}
+export const getUserData = async (email: string) => {
+  const user = await prisma.user.findFirst({
+    where: {
+      email: email,
+    },
+    include: {
+      orders: {
+        include: {
+          tickets: true,
+        },
+      },
+    },
+  });
+  return user;
+};

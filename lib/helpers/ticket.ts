@@ -9,7 +9,7 @@ import { ZeroAddress } from "ethers";
 
 export const processTicket = async (data: any) => {
   // data = JSON.parse('{"config":{"endpoint_url":"https://event-brite.vercel.app/api/ticket","user_id":"1731318251883","action":"order.placed","webhook_id":"11719981"},"api_url":"https://www.eventbriteapi.com/v3/orders/7516439669/"}');
-  await saveLog(JSON.stringify(data));
+  await saveLog(data);
   const action = data.config.action;
   const user_id = data.config.user_id;
   const api_url = data.api_url + "?token=" + PRIVATE_API_TOKEN;
@@ -66,10 +66,10 @@ export const processTicket = async (data: any) => {
   return { success: false, error: "Order not placed" };
 };
 
-const saveLog = async (data: string) => {
+const saveLog = async (data: any) => {
   await prisma.log.create({
     data: {
-      data,
+      body: data,
     },
   });
 };

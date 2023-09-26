@@ -46,7 +46,6 @@ export const saveTokenData = async (
   txHash: string,
   tokenId: string
 ) => {
-  await updateTicketNFTStatus(ticketId, mintingStatus.MINTED);
   await prisma.token.create({
     data: {
       ticketId,
@@ -54,6 +53,7 @@ export const saveTokenData = async (
       tokenId,
     },
   });
+  await updateTicketNFTStatus(ticketId, mintingStatus.MINTED);
 };
 
 const updateTicketNFTStatus = async (ticketId: string, status: string) => {

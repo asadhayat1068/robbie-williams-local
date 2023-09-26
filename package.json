@@ -2,7 +2,7 @@
   "name": "postgres-prisma",
   "repository": "https://github.com/vercel/examples.git",
   "license": "MIT",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "prisma generate && next dev",
@@ -47,7 +47,6 @@
     "buffer": "^6.0.3",
     "prisma": "^5.2.0",
     "process": "^0.11.10",
-    "react-app-rewired": "^2.2.1",
-    "turbo": "^1.10.13"
+    "react-app-rewired": "^2.2.1"
   }
 }

@@ -1,5 +1,6 @@
 export type Ticket = {
-    ticketId: string;
-    email: string;
-    orderId: string;
-}
+  ticketId: string;
+  email: string;
+  orderId: string;
+  nftStatus: string;
+};

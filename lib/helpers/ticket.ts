@@ -38,6 +38,7 @@ export const processTicket = async (data: any) => {
         ticketId: ebOrder.id,
         orderId: dbOrder.id,
         email: ebOrder.email,
+        nftStatus: "pending",
       };
 
       const dbTicket = await prisma.ticket.create({

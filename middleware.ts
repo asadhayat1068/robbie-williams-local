@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { verifyJWT } from "./pages/helpers/web3AuthManager";
+import { verifyJWT } from "./lib/helpers/web3AuthManager";
 
 export async function middleware(request: NextRequest, response: NextResponse) {
   const headers = new Headers(request.headers);

@@ -43,7 +43,6 @@ async function main() {
   //   //     },
   //   //   },
   //   // }),
-
   //   // prisma.user.upsert({
   //   //   where: { email: "giulio@caduceus.foundation" },
   //   //   update: {},
@@ -74,7 +73,6 @@ async function main() {
   //   //     },
   //   //   },
   //   // }),
-
   //   // mark buys tickets for himself first
   //   // prisma.user.upsert({
   //   //   where: { email: "mark@caduceus.foundation" },

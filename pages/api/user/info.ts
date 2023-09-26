@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { createUser, getUserData, updateUser } from "@/pages/helpers/user";
+import { createUser, getUserData, updateUser } from "@/lib/helpers/user";
 
 export default async function handler(
   req: NextApiRequest,

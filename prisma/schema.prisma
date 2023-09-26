@@ -39,6 +39,7 @@ model Ticket {
   orderId   String // FK to Order model
   order     Order    @relation(fields: [orderId], references: [id])
   tokens    Token[]
+  nftStatus String   @default("pending") // pending, minted, failed
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

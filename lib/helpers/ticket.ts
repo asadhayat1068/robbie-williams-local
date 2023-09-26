@@ -46,14 +46,7 @@ export const processTicket = async (data: any) => {
       });
       // Mint Ticket, if user has address
       if (user?.address && user?.address != ZeroAddress) {
-        await mintTicket(
-          dbTicket.id,
-          user.address,
-          1,
-          467458,
-          user.name,
-          user.email
-        );
+        mintTicket(dbTicket.id, user.address, 1, 467458, user.name, user.email);
         return { success: true, message: "Order placed. Minting NFT." };
       } else {
         return { success: true, message: "Order placed. No NFT minted." };

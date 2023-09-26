@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { createUser, getUserData, updateUser } from "@/lib/helpers/user";
+import { ZeroAddress } from "ethers";
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,9 +20,8 @@ export default async function handler(
   if (!user) {
     await createUser(authUser);
     user = await getUserData(email);
-  } else if (!user.address) {
+  } else if (!user.address || user.address === ZeroAddress) {
     await updateUser(authUser);
-    user = await getUserData(email);
     user = await getUserData(email);
   }
   res.status(200).json(user);

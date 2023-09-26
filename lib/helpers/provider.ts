@@ -1,13 +1,8 @@
-import {
-  Contract,
-  JsonRpcProvider,
-  Wallet,
-  formatEther,
-  parseEther,
-} from "ethers";
+import { Contract, JsonRpcProvider, Wallet } from "ethers";
 import prisma from "@/lib/prisma";
 
 import { TICKET_NFT_CONTRACT_ABI } from "./contract/contract_abi";
+import { mintingStatus } from "../types/Ticket.type";
 const { ETHERS_JSONRPC_URL, SIGNER_PRIVATE_KEY, TICKET_NFT_CONTRACT_ADDRESS } =
   process.env;
 const provider = new JsonRpcProvider(ETHERS_JSONRPC_URL);
@@ -27,28 +22,23 @@ export const mintTicket = async (
   name: string,
   email: string
 ) => {
-  // const signerAddress = await signer.getAddress();
-  // const balance = await provider.getBalance(signerAddress);
-  // console.log("Balance: ", formatEther(balance));
-
-  // console.log(
-  //     { ETHERS_JSONRPC_URL, SIGNER_PRIVATE_KEY, TICKET_NFT_CONTRACT_ADDRESS }
-  // );
-
-  const tx = await TICKET_CONTRACT.safeMint(
-    to,
-    ticketClassId,
-    ticketNumber,
-    name,
-    email
-  );
-  console.log(tx.hash);
-  const txReceipt = await tx.wait(3);
-  const eventArgs = txReceipt.logs[0].args;
-  const tokenId = eventArgs[2].toString();
-  console.log({ txHash: tx.hash, tokenId });
-  await saveTokenData(ticketId, tx.hash, tokenId);
-  return { txHash: tx.hash, tokenId };
+  try {
+    await updateTicketNFTStatus(ticketId, mintingStatus.MINTING);
+    const tx = await TICKET_CONTRACT.safeMint(
+      to,
+      ticketClassId,
+      ticketNumber,
+      name,
+      email
+    );
+    const txReceipt = await tx.wait(3);
+    const eventArgs = txReceipt.logs[0].args;
+    const tokenId = eventArgs[2].toString();
+    await saveTokenData(ticketId, tx.hash, tokenId);
+    return { txHash: tx.hash, tokenId };
+  } catch (error) {
+    await updateTicketNFTStatus(ticketId, mintingStatus.FAILED);
+  }
 };
 
 export const saveTokenData = async (
@@ -56,11 +46,23 @@ export const saveTokenData = async (
   txHash: string,
   tokenId: string
 ) => {
-  const token = await prisma.token.create({
+  await updateTicketNFTStatus(ticketId, mintingStatus.MINTED);
+  await prisma.token.create({
     data: {
       ticketId,
       txId: txHash,
       tokenId,
+    },
+  });
+};
+
+const updateTicketNFTStatus = async (ticketId: string, status: string) => {
+  await prisma.ticket.update({
+    where: {
+      id: ticketId,
+    },
+    data: {
+      nftStatus: status,
     },
   });
 };

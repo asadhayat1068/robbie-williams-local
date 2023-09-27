@@ -74,6 +74,19 @@ export const saveLog = async (data: any) => {
   });
 };
 
+export const getUserTicketByEmail = async (ticketId: string, email: string) => {
+  const ticket = await prisma.ticket.findFirst({
+    where: {
+      id: ticketId,
+      email,
+    },
+  });
+  if (!ticket) {
+    return null;
+  }
+  return ticket;
+};
+
 // const handleUser = async (user: any) => {
 //     return await userExists(user);
 

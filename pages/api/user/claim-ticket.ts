@@ -4,6 +4,7 @@ import { ZeroAddress } from "ethers";
 import { getUserTicketByEmail } from "@/lib/helpers/ticket";
 import { mintingStatus } from "@/lib/types/Ticket.type";
 import { getTokenByTicketId } from "@/lib/helpers/token";
+import { mintTicket } from "@/lib/helpers/provider";
 
 export default async function handler(
   req: NextApiRequest,
@@ -54,9 +55,25 @@ export default async function handler(
       ticket.nftStatus === mintingStatus.UNCLAIMED ||
       ticket.nftStatus === mintingStatus.FAILED
     ) {
-      // TODO: Mint NFT
+      const tx = await mintTicket(
+        ticket.id,
+        user.address,
+        1, // TODO: ticketClassId
+        467458, //TODO: ticketNumber
+        user.name,
+        user.email
+      );
+      res.status(200).json({
+        success: true,
+        message: "NFT minting request sent",
+        data: tx,
+      });
+      return;
     } else if (ticket.nftStatus === mintingStatus.MINTING) {
-      // TODO: NFT minting request already sent. Return TxID
+      res.status(200).json({
+        success: true,
+        message: "NFT minting is already in progress",
+      });
     } else if (ticket.nftStatus === mintingStatus.MINTED) {
       const token = await getTokenByTicketId(ticket.id);
       res.status(200).json({

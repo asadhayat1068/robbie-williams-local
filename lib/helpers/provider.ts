@@ -31,29 +31,23 @@ export const mintTicket = async (
       name,
       email
     );
-    const txReceipt = await tx.wait();
-    const eventArgs = txReceipt.logs[0].args;
-    const tokenId = eventArgs[2].toString();
-    await saveTokenData(ticketId, tx.hash, tokenId);
-    return { txHash: tx.hash, tokenId };
+    await saveTokenData(ticketId, tx.hash);
+    return { transaction_hash: tx.hash };
   } catch (error) {
     await updateTicketNFTStatus(ticketId, mintingStatus.FAILED);
+    return null;
   }
 };
 
-export const saveTokenData = async (
-  ticketId: string,
-  txHash: string,
-  tokenId: string
-) => {
-  await prisma.token.create({
+export const saveTokenData = async (ticketId: string, txHash: string) => {
+  await prisma.mintingQueue.create({
     data: {
-      ticketId,
-      txId: txHash,
-      tokenId,
+      ticketId: ticketId,
+      transactionHash: txHash,
+      status: mintingStatus.QUEUED,
     },
   });
-  await updateTicketNFTStatus(ticketId, mintingStatus.MINTED);
+  await updateTicketNFTStatus(ticketId, mintingStatus.PENDING);
 };
 
 const updateTicketNFTStatus = async (ticketId: string, status: string) => {

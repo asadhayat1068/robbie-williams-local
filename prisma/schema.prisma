@@ -39,6 +39,7 @@ model Ticket {
   orderId   String // FK to Order model
   order     Order    @relation(fields: [orderId], references: [id])
   tokens    Token[]
+  mintingQueue MintingQueue[]
   nftStatus String   @default("pending") // pending, minted, failed
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -50,6 +51,16 @@ model Token {
   txId      String   @unique // NFT txId
   ticketId  String   // FK to Ticket model
   ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MintingQueue {
+  id        String   @id @default(uuid())
+  ticketId  String   // FK to Ticket model
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  transactionHash String
+  status   String   @default("pending") // pending, processes, failed
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

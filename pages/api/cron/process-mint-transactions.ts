@@ -6,5 +6,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   await saveLog({ check: "check", time: Date.now() });
-  return res.status(200).json({ success: true });
+  res.status(200).json({ success: true });
+  return;
 }

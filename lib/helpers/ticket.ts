@@ -66,7 +66,7 @@ export const processTicket = async (data: any) => {
   return { success: false, error: "Order not placed" };
 };
 
-const saveLog = async (data: any) => {
+export const saveLog = async (data: any) => {
   await prisma.log.create({
     data: {
       body: data,

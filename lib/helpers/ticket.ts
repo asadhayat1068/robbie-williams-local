@@ -50,8 +50,8 @@ export const processTicket = async (data: any) => {
         const tx = await mintTicket(
           dbTicket.id,
           user.address,
-          1,
-          467458,
+          1, // TODO: ticketClassId
+          467458, //TODO: ticketNumber
           user.name,
           user.email
         );

@@ -60,3 +60,21 @@ const updateTicketNFTStatus = async (ticketId: string, status: string) => {
     },
   });
 };
+
+export const getTransactionReceipt = async (txHash: string) => {
+  return await provider.getTransactionReceipt(txHash);
+};
+
+export const createMintToken = async (
+  tokenId: string,
+  ticketId: string,
+  transactionHash: string
+) => {
+  await prisma.token.create({
+    data: {
+      tokenId,
+      ticketId,
+      txId: transactionHash,
+    },
+  });
+};

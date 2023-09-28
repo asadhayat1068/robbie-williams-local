@@ -41,37 +41,12 @@ export const processTicket = async (data: any) => {
         ebOrder.resource_uri + "/attendees?token=" + PRIVATE_API_TOKEN;
       const attendees_resp = await axios.get(attendees_api_url);
       const attendees = attendees_resp.data.attendees ?? [];
-      await processAttendees(dbOrder.id, attendees);
-      // // handle ticket entry
-      return;
-      // const ticket: Ticket = {
-      //   ticketId: ebOrder.id,
-      //   orderId: dbOrder.id,
-      //   email: ebOrder.email,
-      //   nftStatus: mintingStatus.UNCLAIMED,
-      // };
-
-      // const dbTicket = await prisma.ticket.create({
-      //   data: ticket,
-      // });
-      // // Mint Ticket, if user has address
-      // if (user?.address && user?.address != ZeroAddress) {
-      //   const tx = await mintTicket(
-      //     dbTicket.id,
-      //     user.address,
-      //     1, // TODO: ticketClassId
-      //     467458, //TODO: ticketNumber
-      //     user.name,
-      //     user.email
-      //   );
-      //   return {
-      //     success: true,
-      //     message: "Order placed. Minting NFT.",
-      //     data: tx,
-      //   };
-      // } else {
-      //   return { success: true, message: "Order placed. No NFT minted." };
-      // }
+      let _attendees = [];
+      for (let i = 0; i < attendees.length; i++) {
+        _attendees.push(processAttendee(dbOrder.id, attendees[i]));
+      }
+      await Promise.all(_attendees);
+      return { success: false, error: "Order Placed" };
     } else {
       return { success: false, error: "Order Place" };
     }
@@ -79,32 +54,30 @@ export const processTicket = async (data: any) => {
   return { success: false, error: "Order not placed" };
 };
 
-const processAttendees = async (orderId: string, attendees: []) => {
-  attendees.map(async (attendee: any) => {
-    const { name, email } = attendee;
-    let user = await getUserData(email);
-    if (!user) {
-      await createUser({ name, email });
-    }
-    user = await getUserData(email);
-    const ticket = await prisma.ticket.create({
-      data: {
-        ticketId: attendee.id,
-        orderId,
-        userId: user?.id || "",
-      },
-    });
-    if (user?.address && user?.address != ZeroAddress) {
-      const tx = await mintTicket(
-        ticket.id,
-        user.address,
-        1, // TODO: ticketClassId
-        467458, //TODO: ticketNumber
-        user.name,
-        user.email
-      );
-    }
+const processAttendee = async (orderId: string, attendee: any) => {
+  const { name, email } = attendee.profile;
+  let user = await getUserData(email);
+  if (!user) {
+    await createUser({ name, email });
+  }
+  user = await getUserData(email);
+  const ticket = await prisma.ticket.create({
+    data: {
+      ticketId: attendee.id,
+      orderId,
+      userId: user?.id || "",
+    },
   });
+  if (user?.address && user?.address != ZeroAddress) {
+    const tx = await mintTicket(
+      ticket.id,
+      user.address,
+      1, // TODO: ticketClassId
+      467458, //TODO: ticketNumber
+      user.name,
+      user.email
+    );
+  }
 };
 
 export const saveLog = async (data: any) => {

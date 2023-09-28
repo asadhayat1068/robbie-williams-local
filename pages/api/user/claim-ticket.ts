@@ -42,6 +42,7 @@ export default async function handler(
       });
       return;
     }
+
     const ticket = await getUserTicketByEmail(ticketId, user.id);
     if (!ticket) {
       res.status(403).json({

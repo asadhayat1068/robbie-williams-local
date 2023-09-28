@@ -80,4 +80,5 @@ export const createMintToken = async (
       txId: transactionHash,
     },
   });
+  await updateTicketNFTStatus(ticketId, mintingStatus.MINTED);
 };

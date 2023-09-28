@@ -6,6 +6,7 @@ import {
   createMintToken,
   getTransactionReceipt,
   mintTicket,
+  updateTicketNFTStatus,
 } from "@/lib/helpers/provider";
 import { Transaction, ethers } from "ethers";
 
@@ -53,7 +54,8 @@ const processQueueItem = async (item: any) => {
 };
 
 const updateQueueItemStatus = async (item: any, status: string) => {
-  await prisma.mintingQueue.update({
+  const ticketStatusUpdate = updateTicketNFTStatus(item.ticketId, status);
+  const mintingQueueStatus = prisma.mintingQueue.update({
     where: {
       id: item.id,
     },
@@ -61,4 +63,5 @@ const updateQueueItemStatus = async (item: any, status: string) => {
       status: status,
     },
   });
+  await Promise.all([ticketStatusUpdate, mintingQueueStatus]);
 };

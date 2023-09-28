@@ -18,6 +18,7 @@ model User {
   email     String   @unique
   address   String   @default("0x0000000000000000000000000000000000000000")
   orders    Order[]
+  tickets   Ticket[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -25,6 +26,7 @@ model User {
 model Order {
   id        String   @id @default(uuid())
   orderId   String   @unique // External OrderId from eventbrite API
+  eventId   String // Event Brite EventId
   userId    String // FK to User model
   user      User     @relation(fields: [userId], references: [id])
   tickets   Ticket[]
@@ -34,10 +36,11 @@ model Order {
 
 model Ticket {
   id        String   @id @default(uuid())
-  ticketId  String   @unique // External TicketId from eventbrite API
-  email     String // Email of the person the ticket was bought for
+  ticketId  String   @unique // External attendee from eventbrite API
   orderId   String // FK to Order model
   order     Order    @relation(fields: [orderId], references: [id])
+  userId    String // FK to User model
+  user      User    @relation(fields: [userId], references: [id])
   tokens    Token[]
   mintingQueue MintingQueue[]
   nftStatus String   @default("pending") // pending, minted, failed

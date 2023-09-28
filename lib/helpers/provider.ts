@@ -50,7 +50,10 @@ export const saveTokenData = async (ticketId: string, txHash: string) => {
   await updateTicketNFTStatus(ticketId, mintingStatus.PENDING);
 };
 
-const updateTicketNFTStatus = async (ticketId: string, status: string) => {
+export const updateTicketNFTStatus = async (
+  ticketId: string,
+  status: string
+) => {
   await prisma.ticket.update({
     where: {
       id: ticketId,

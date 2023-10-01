@@ -35,11 +35,8 @@ export const getUserData = async (email: string) => {
       email: email,
     },
     include: {
-      orders: {
-        include: {
-          tickets: true,
-        },
-      },
+      orders: true,
+      tickets: true,
     },
   });
   return user;

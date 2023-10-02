@@ -37,6 +37,10 @@ function Page() {
   // localStorage.setItem("auth-jwt", jwtToken || "");
   useEffect(() => {
     const jwtToken = Cookies.get("auth-jwt") || "";
+    if (!jwtToken) {
+      window.location.href = "/login";
+      return;
+    }
     setJwt(jwtToken);
     getUserInfo(jwt).then((res) => {
       if (error !== null) {

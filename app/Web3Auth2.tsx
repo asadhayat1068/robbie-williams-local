@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Web3Auth } from "@web3auth/modal";
 import { CHAIN_NAMESPACES, IProvider } from "@web3auth/base";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import Cookie from "js-cookie";
 import "./App.css";
 import RPC from "./web3RPC"; // for using web3.js
 //import RPC from "./ethersRPC"; // for using ethers.js
@@ -19,10 +20,18 @@ import {
 } from "@web3auth/wallet-connect-v2-adapter";
 import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 import { TorusWalletAdapter } from "@web3auth/torus-evm-adapter";
+import { redirect } from "next/navigation";
+import { IAuth } from "./types/IAuth";
+import { NextResponse } from "next/server";
 
 const clientId =
-  "BEglQSgt4cUWcj6SKRdu5QkOXTsePmMcusG5EAoyjyOYKlVRjIF1iCNnMOTfpzCiunHRrMui8TIwQPXdkQ8Yxuk"; // get from https://dashboard.web3auth.io
+  "BOuNxmtFKDLGksFd9Vtcaz_M4w0G3jOW8o7QoWBI0-_bu2WU1HE7HfQqs4gRvbcV9KDwFsMe5zrRF4S_YmJ_U4A"; // get from https://dashboard.web3auth.io
 
+// function App({
+//   setAuthData: setAuthData,
+// }: {
+//   setAuthData: Dispatch<SetStateAction<IAuth | null>>;
+// }) {
 function App() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
   const [torusPlugin, setTorusPlugin] =
@@ -55,7 +64,7 @@ function App() {
             loginGridCol: 3,
             primaryButton: "externalLogin", // "externalLogin" | "socialLogin" | "emailLogin"
           },
-          web3AuthNetwork: "cyan",
+          web3AuthNetwork: "testnet",
         });
 
         const openloginAdapter = new OpenloginAdapter({
@@ -176,6 +185,7 @@ function App() {
         setWeb3auth(web3auth);
 
         await web3auth.initModal();
+        await initAuthData();
 
         // await web3auth.initModal({
         //   modalConfig: {
@@ -208,6 +218,7 @@ function App() {
 
         if (web3auth.connected) {
           setLoggedIn(true);
+          await initAuthData();
         }
       } catch (error) {
         console.error(error);
@@ -216,6 +227,44 @@ function App() {
 
     init();
   }, []);
+
+  useEffect(() => {
+    initAuthData();
+  }, [web3auth, provider]);
+
+  const initAuthData = async () => {
+    let data: IAuth | null = null;
+    if (loggedIn && web3auth && web3auth.provider) {
+      const idToken = await web3auth.authenticateUser();
+      if (!idToken.idToken) {
+        console.log("idToken not initialized yet");
+        console.log({ web3auth });
+        return;
+      }
+      data = {
+        web3Auth: web3auth,
+        provider: web3auth.provider,
+        jwt: idToken.idToken,
+      };
+      Cookie.set("auth-jwt", idToken.idToken);
+      const origin = window.location.origin;
+      window.location.href = origin;
+      return;
+      // redirect("/user/home");
+      return;
+      // localStorage.setItem("auth-jwt", JSON.stringify(idToken.idToken));
+      // return data;
+    } else {
+      data = {
+        web3Auth: null,
+        provider: null,
+        jwt: null,
+      };
+      // setAuthData(null);
+      // localStorage.removeItem("auth-jwt");
+      // return data;
+    }
+  };
 
   const login = async () => {
     if (!web3auth) {
@@ -232,6 +281,7 @@ function App() {
       return;
     }
     const idToken = await web3auth.authenticateUser();
+    console.log("idToken", idToken);
     uiConsole(idToken);
   };
 
@@ -465,12 +515,12 @@ function App() {
 
   return (
     <div className="container">
-      <h1 className="title">
+      {/* <h1 className="title">
         <a target="_blank" href="http://web3auth.io/" rel="noreferrer">
           Web3Auth{" "}
         </a>
         & ReactJS Ethereum Example
-      </h1>
+      </h1> */}
 
       <div className="grid">{loggedIn ? loggedInView : unloggedInView}</div>
 

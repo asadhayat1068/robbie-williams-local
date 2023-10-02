@@ -47,8 +47,6 @@ const App = () => {
     }
   };
 
-  console.log();
-
   const loginWithProvider = async (loginProvider: string) => {
     if (isConnecting) return;
     setIsConnecting(true);

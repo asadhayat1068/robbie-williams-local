@@ -17,3 +17,7 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+a.active {
+  background-color: rgb(243, 244, 246);
+}

@@ -3,7 +3,8 @@ import prisma from "@/lib/prisma";
 import { PRIVATE_API_TOKEN } from "../configs/app";
 import { getUserData, createUser } from "./user";
 import { Order } from "../types/Order.type";
-import { Ticket, mintingStatus } from "../types/Ticket.type";
+import { Ticket } from "../types/Ticket.type";
+import { mintingStatus } from "../configs/constants";
 import { mintTicket } from "./provider";
 import { ZeroAddress } from "ethers";
 

@@ -2,7 +2,7 @@ import { Contract, JsonRpcProvider, Wallet } from "ethers";
 import prisma from "@/lib/prisma";
 
 import { TICKET_NFT_CONTRACT_ABI } from "./contract/contract_abi";
-import { mintingStatus } from "../types/Ticket.type";
+import { mintingStatus } from "../configs/constants";
 const { ETHERS_JSONRPC_URL, SIGNER_PRIVATE_KEY, TICKET_NFT_CONTRACT_ADDRESS } =
   process.env;
 const provider = new JsonRpcProvider(ETHERS_JSONRPC_URL);

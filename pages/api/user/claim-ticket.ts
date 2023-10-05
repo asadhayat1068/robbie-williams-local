@@ -2,9 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { createUser, getUserData, updateUser } from "@/lib/helpers/user";
 import { ZeroAddress } from "ethers";
 import { getUserTicketByEmail } from "@/lib/helpers/ticket";
-import { mintingStatus } from "@/lib/types/Ticket.type";
 import { getTokenByTicketId } from "@/lib/helpers/token";
 import { mintTicket } from "@/lib/helpers/provider";
+import { mintingStatus } from "@/lib/configs/constants";
 
 export default async function handler(
   req: NextApiRequest,
@@ -64,6 +64,13 @@ export default async function handler(
         user.name,
         user.email
       );
+      if (!tx) {
+        res.status(200).json({
+          success: false,
+          message: "failed to submit minting request",
+          data: tx,
+        });
+      }
       res.status(200).json({
         success: true,
         message: "NFT minting request sent",

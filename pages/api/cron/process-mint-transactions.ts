@@ -1,5 +1,4 @@
 import { saveLog } from "@/lib/helpers/ticket";
-import { mintingStatus } from "@/lib/types/Ticket.type";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "@/lib/prisma";
 import {
@@ -9,6 +8,7 @@ import {
   updateTicketNFTStatus,
 } from "@/lib/helpers/provider";
 import { Transaction, ethers } from "ethers";
+import { mintingStatus } from "@/lib/configs/constants";
 
 export default async function handler(
   req: NextApiRequest,

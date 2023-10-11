@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Web3Auth } from "@web3auth/modal";
 import { CHAIN_NAMESPACES, IProvider } from "@web3auth/base";
 import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
@@ -20,9 +20,9 @@ import {
 } from "@web3auth/wallet-connect-v2-adapter";
 import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 import { TorusWalletAdapter } from "@web3auth/torus-evm-adapter";
+import { SupportedNetworks } from "@etherspot/prime-sdk/dist/sdk/network/constants";
+import { useAuth } from "./Context/store";
 import { redirect } from "next/navigation";
-import { IAuth } from "./types/IAuth";
-import { NextResponse } from "next/server";
 
 const clientId =
   "BOuNxmtFKDLGksFd9Vtcaz_M4w0G3jOW8o7QoWBI0-_bu2WU1HE7HfQqs4gRvbcV9KDwFsMe5zrRF4S_YmJ_U4A"; // get from https://dashboard.web3auth.io
@@ -38,6 +38,7 @@ function App() {
     useState<TorusWalletConnectorPlugin | null>(null);
   const [provider, setProvider] = useState<IProvider | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
+  const { setIsLoggedIn, setAuthData } = useAuth();
 
   useEffect(() => {
     const init = async () => {
@@ -219,6 +220,7 @@ function App() {
         if (web3auth.connected) {
           setLoggedIn(true);
           await initAuthData();
+          redirect("/user");
         }
       } catch (error) {
         console.error(error);
@@ -226,14 +228,15 @@ function App() {
     };
 
     init();
-  }, []);
+  }, [loggedIn]);
 
   useEffect(() => {
     initAuthData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [web3auth, provider]);
 
   const initAuthData = async () => {
-    let data: IAuth | null = null;
+    let data: any = null;
     if (loggedIn && web3auth && web3auth.provider) {
       const idToken = await web3auth.authenticateUser();
       if (!idToken.idToken) {
@@ -241,28 +244,20 @@ function App() {
         console.log({ web3auth });
         return;
       }
-      data = {
-        web3Auth: web3auth,
+      // data = {
+      //   web3Auth: web3auth,
+      //   provider: web3auth.provider,
+      //   jwt: idToken.idToken,
+      // };
+      // Cookie.set("auth-jwt", idToken.idToken);
+      setIsLoggedIn(true);
+      setAuthData({
+        web3auth: web3auth,
+        torusPlugin: torusPlugin as TorusWalletConnectorPlugin,
         provider: web3auth.provider,
         jwt: idToken.idToken,
-      };
-      Cookie.set("auth-jwt", idToken.idToken);
-      const origin = window.location.origin;
-      window.location.href = origin;
-      return;
-      // redirect("/user/home");
-      return;
-      // localStorage.setItem("auth-jwt", JSON.stringify(idToken.idToken));
-      // return data;
-    } else {
-      data = {
-        web3Auth: null,
-        provider: null,
-        jwt: null,
-      };
-      // setAuthData(null);
-      // localStorage.removeItem("auth-jwt");
-      // return data;
+        userName: "",
+      });
     }
   };
 
@@ -426,10 +421,11 @@ function App() {
   // };
 
   function uiConsole(...args: any[]): void {
-    const el = document.querySelector("#console>p");
-    if (el) {
-      el.innerHTML = JSON.stringify(args || {}, null, 2);
-    }
+    // const el = document.querySelector("#console>p");
+    // if (el) {
+    //   el.innerHTML = JSON.stringify(args || {}, null, 2);
+    // }
+    console.log(args);
   }
 
   const loggedInView = (
@@ -513,8 +509,14 @@ function App() {
     </button>
   );
 
+  const logOutView = (
+    <button onClick={logout} className="card">
+      Logout
+    </button>
+  );
+
   return (
-    <div className="container">
+    <div>
       {/* <h1 className="title">
         <a target="_blank" href="http://web3auth.io/" rel="noreferrer">
           Web3Auth{" "}
@@ -522,9 +524,9 @@ function App() {
         & ReactJS Ethereum Example
       </h1> */}
 
-      <div className="grid">{loggedIn ? loggedInView : unloggedInView}</div>
+      <div className="">{loggedIn ? logOutView : unloggedInView}</div>
 
-      <footer className="footer">
+      {/* <footer className="footer">
         <a
           href="https://github.com/Web3Auth/examples/tree/main/web-modal-sdk/evm/react-evm-modal-example"
           target="_blank"
@@ -532,7 +534,7 @@ function App() {
         >
           Source code
         </a>
-      </footer>
+      </footer> */}
     </div>
   );
 }

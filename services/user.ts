@@ -1,15 +1,9 @@
 import { API_BASE_URI } from "@/lib/configs/app";
-import Cookies from "js-cookie";
 const BASE_URI = API_BASE_URI + "/user";
 
 export const getUserInfo = async (jwt: string) => {
   const _url = BASE_URI + "/info";
   try {
-    // const cookieStore = cookies();
-    const jwt = Cookies.get("auth-jwt");
-    // const jwt = cookieStore.get("auth-jwt");
-    console.log("service-jwt", jwt);
-    // const jwt = localStorage.getItem("auth-jwt");
     const response = await fetch(_url, {
       method: "POST", // or 'PUT'
       headers: {
@@ -25,10 +19,9 @@ export const getUserInfo = async (jwt: string) => {
   }
 };
 
-export const claimTicket = async (ticketId: string) => {
+export const claimTicket = async (ticketId: string, jwt: string) => {
   const _url = BASE_URI + "/claim-ticket";
   try {
-    const jwt = Cookies.get("auth-jwt");
     const response = await fetch(_url, {
       method: "POST",
       headers: {

@@ -1,17 +1,26 @@
-import { NavLink } from "react-router-dom";
+import Image from "next/image";
+import Link from "next/link";
 
 const NavBar = () => {
   return (
     <div className="flex flex-col w-64 h-screen px-4 py-8 overflow-y-auto border-r">
-      <h2 className="text-3xl font-semibold text-center text-blue-800">RW</h2>
+      <div className="flex flex-row gap-1 text-3xl font-semibold text-center text-blue-800">
+        <Image
+          src="https://uploads-ssl.webflow.com/64fef47081a9f032eda73f65/650ae6b755c9d2d7ffd9f123_RW%20Logo%202-p-500.png"
+          width={50}
+          height={50}
+          alt="RW Logo"
+        />
+        <span className="mb-0">RW</span>
+      </div>
 
       <div className="flex flex-col justify-between mt-6">
         <aside>
           <ul>
             <li>
-              <NavLink
+              <Link
                 className="flex items-center px-4 py-2 mt-5 text-gray-600 rounded-md hover:bg-gray-200"
-                to={"/user/dashboard"}
+                href={"/user/dashboard"}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -29,13 +38,13 @@ const NavBar = () => {
                 </svg>
 
                 <span className="mx-4 font-medium">Dashboard</span>
-              </NavLink>
+              </Link>
             </li>
 
             <li>
-              <NavLink
+              <Link
                 className="flex items-center px-4 py-2 mt-5 text-gray-600 rounded-md hover:bg-gray-200"
-                to={"/user/tickets"}
+                href={"/user/tickets"}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -58,7 +67,7 @@ const NavBar = () => {
                   />
                 </svg>
                 <span className="mx-4 font-medium">Tickets</span>
-              </NavLink>
+              </Link>
             </li>
           </ul>
         </aside>

@@ -20,7 +20,7 @@ const NavBar = () => {
             <li>
               <Link
                 className="flex items-center px-4 py-2 mt-5 text-gray-600 rounded-md hover:bg-gray-200"
-                href={"/user/dashboard"}
+                href={"/user"}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

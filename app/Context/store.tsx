@@ -5,7 +5,7 @@ import { Web3Auth } from "@web3auth/modal";
 import { TorusWalletConnectorPlugin } from "@web3auth/torus-wallet-connector-plugin";
 import React, { Dispatch, SetStateAction } from "react";
 
-type AuthDataType = {
+export type AuthDataType = {
   web3auth: Web3Auth;
   torusPlugin: TorusWalletConnectorPlugin;
   provider: IProvider;

@@ -38,6 +38,29 @@ export const claimTicket = async (ticketId: string, jwt: string) => {
   }
 };
 
+export const transferTicket = async (
+  ticket_id: string,
+  to_email: string,
+  jwt: string
+) => {
+  const _url = BASE_URI + "/transfer-ticket";
+  try {
+    const response = await fetch(_url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${jwt}`,
+      },
+      body: JSON.stringify({ ticket_id, to_email }),
+    });
+
+    const result = await response.json();
+    return SuccessResponse(result);
+  } catch (error) {
+    return ErrorResponse(error);
+  }
+};
+
 const SuccessResponse = (data: any) => {
   return {
     data: data,

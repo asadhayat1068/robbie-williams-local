@@ -1,9 +1,20 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Ticket from "./Ticket";
+import { useAuth } from "@/app/Context/store";
+import { getUserInfo } from "@/services/user";
+import withAuth from "@/app/Context/withAuth";
 
-function Tickets({ tickets }: { tickets: Object[] }) {
-  console.log({ tickets });
+function Tickets() {
+  const { authData } = useAuth();
+  const [tickets, setTickets] = useState([]);
+  const init = async () => {
+    const info = await getUserInfo(authData.jwt);
+    setTickets(info.data.tickets);
+  };
+  useEffect(() => {
+    init();
+  }, []);
   return (
     <div className="flex flex-col w-full">
       <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -41,4 +52,4 @@ function Tickets({ tickets }: { tickets: Object[] }) {
   );
 }
 
-export default Tickets;
+export default withAuth(Tickets);

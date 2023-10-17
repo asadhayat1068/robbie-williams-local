@@ -60,9 +60,7 @@ export default async function handler(
         ticket.id,
         user.address,
         1, // TODO: ticketClassId
-        467458, //TODO: ticketNumber
-        user.name,
-        user.email
+        1 //TODO: ticketCount
       );
       if (!tx) {
         res.status(200).json({

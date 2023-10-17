@@ -18,18 +18,15 @@ export const mintTicket = async (
   ticketId: string,
   to: string,
   ticketClassId: number,
-  ticketNumber: number,
-  name: string,
-  email: string
+  ticketCount: number
 ) => {
   try {
     await updateTicketNFTStatus(ticketId, mintingStatus.MINTING);
-    const tx = await TICKET_CONTRACT.safeMint(
+    const tx = await TICKET_CONTRACT.mint(
       to,
-      ticketClassId,
-      ticketNumber,
-      name,
-      email
+      `${ticketClassId}`,
+      `${ticketCount}`,
+      "0x"
     );
     await saveTokenData(ticketId, tx.hash);
     return { transaction_hash: tx.hash };

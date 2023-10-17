@@ -42,14 +42,12 @@ export const processTicket = async (data: any) => {
         ebOrder.resource_uri + "/attendees?token=" + PRIVATE_API_TOKEN;
       const attendees_resp = await axios.get(attendees_api_url);
       const attendees = attendees_resp.data.attendees ?? [];
-      let _attendees = [];
       for (let i = 0; i < attendees.length; i++) {
-        _attendees.push(processAttendee(dbOrder.id, attendees[i]));
+        await processAttendee(dbOrder.id, attendees[i]);
       }
-      await Promise.all(_attendees);
       return { success: false, error: "Order Placed" };
     } else {
-      return { success: false, error: "Order Place" };
+      return { success: false, error: "Order Placed" };
     }
   }
   return { success: false, error: "Order not placed" };
@@ -74,9 +72,7 @@ const processAttendee = async (orderId: string, attendee: any) => {
       ticket.id,
       user.address,
       1, // TODO: ticketClassId
-      467458, //TODO: ticketNumber
-      user.name,
-      user.email
+      1 //TODO: ticketNumber
     );
   }
 };
@@ -103,6 +99,42 @@ export const getUserTicketByEmail = async (
     return null;
   }
   return ticket;
+};
+
+export const getTicketByTicketId = async (ticketId: string) => {
+  const ticket = await prisma.ticket.findFirst({
+    where: {
+      id: ticketId,
+    },
+    include: {
+      tokens: true,
+    },
+  });
+  if (!ticket) {
+    return null;
+  }
+  return ticket;
+};
+
+export const transferTicket = async (ticketId: string, toEmail: string) => {
+  const ticket = await getTicketByTicketId(ticketId);
+  if (!ticket) {
+    return null;
+  }
+  let toUser = await getUserData(toEmail);
+  if (!toUser) {
+    await createUser({ email: toEmail, name: toEmail, address: "" });
+    toUser = await getUserData(toEmail);
+  }
+  const updatedTicket = await prisma.ticket.update({
+    where: {
+      id: ticketId,
+    },
+    data: {
+      userId: toUser?.id,
+    },
+  });
+  return updatedTicket;
 };
 
 // const handleUser = async (user: any) => {

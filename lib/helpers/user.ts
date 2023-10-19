@@ -46,3 +46,13 @@ export const getUserData = async (email: string) => {
   });
   return user;
 };
+
+export const findOrCreateUser = async (authUser: any) => {
+  const { email, address, name } = authUser;
+  let user = await getUserData(email);
+  if (!user) {
+    await createUser(authUser);
+    user = await getUserData(email);
+  }
+  return user;
+};

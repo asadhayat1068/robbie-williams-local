@@ -5,4 +5,6 @@ export const mintingStatus = {
   QUEUED: "queued",
   PENDING: "pending",
   UNCLAIMED: "unclaimed",
+  LOCKED: "locked",
+  UNLOCKED: "unlocked",
 };

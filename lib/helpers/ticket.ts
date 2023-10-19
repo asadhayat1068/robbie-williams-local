@@ -116,22 +116,17 @@ export const getTicketByTicketId = async (ticketId: string) => {
   return ticket;
 };
 
-export const transferTicket = async (ticketId: string, toEmail: string) => {
+export const transferTicket = async (ticketId: string, toUserId: string) => {
   const ticket = await getTicketByTicketId(ticketId);
   if (!ticket) {
     return null;
-  }
-  let toUser = await getUserData(toEmail);
-  if (!toUser) {
-    await createUser({ email: toEmail, name: toEmail, address: "" });
-    toUser = await getUserData(toEmail);
   }
   const updatedTicket = await prisma.ticket.update({
     where: {
       id: ticketId,
     },
     data: {
-      userId: toUser?.id,
+      userId: toUserId,
     },
   });
   return updatedTicket;

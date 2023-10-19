@@ -66,16 +66,67 @@ export const getTransactionReceipt = async (txHash: string) => {
 };
 
 export const createMintToken = async (
-  tokenId: string,
+  tokenClassId: string,
   ticketId: string,
   transactionHash: string
 ) => {
   await prisma.token.create({
     data: {
-      tokenId,
+      tokenClassId: parseInt(tokenClassId),
       ticketId,
       txId: transactionHash,
     },
   });
   await updateTicketNFTStatus(ticketId, mintingStatus.MINTED);
+};
+
+export const transferToken = async (
+  from: string,
+  to: string,
+  tokenClassId: string,
+  amount: string = "1",
+  data: string = "0x"
+) => {
+  const tx = await TICKET_CONTRACT.OwnerSafeTransferFrom(
+    from,
+    to,
+    tokenClassId,
+    amount,
+    data
+  );
+  return { transaction_hash: tx.hash };
+};
+
+export const lockToken = async (
+  fromAddress: string,
+  tokenClassId: string,
+  amount: string = "1",
+  data: string = "0x"
+) => {
+  const token = await transferToken(
+    fromAddress,
+    signer.address,
+    tokenClassId,
+    amount,
+    data
+  );
+  updateTicketNFTStatus(tokenClassId, mintingStatus.UNCLAIMED);
+  return token;
+};
+
+export const unlockToken = async (
+  toAddress: string,
+  tokenClassId: string,
+  amount: string = "1",
+  data: string = "0x"
+) => {
+  const token = await transferToken(
+    signer.address,
+    toAddress,
+    tokenClassId,
+    amount,
+    data
+  );
+  await updateTicketNFTStatus(tokenClassId, mintingStatus.MINTED);
+  return token;
 };

@@ -8,3 +8,14 @@ export const getTokenByTicketId = async (ticketId: string) => {
   });
   return token;
 };
+
+export const transferToken = async (tokenId: string, toAddress: string) => {
+  const token = await prisma.token.findFirst({
+    where: {
+      id: tokenId,
+    },
+  });
+  if (!token) {
+    return null;
+  }
+};

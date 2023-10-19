@@ -10,11 +10,9 @@ import Loading from "@/components/Suspense/Loading";
 function User() {
   return (
     <>
-      <LayOut>
-        <Suspense fallback={<Loading />}>
-          <Dashboard />
-        </Suspense>
-      </LayOut>
+      <Suspense fallback={<Loading />}>
+        <Dashboard />
+      </Suspense>
     </>
   );
 }

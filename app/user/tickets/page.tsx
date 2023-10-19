@@ -7,11 +7,9 @@ import Tickets from "@/components/User/Tickets/Tickets";
 function TicketsPage() {
   return (
     <>
-      <LayOut>
-        <Suspense fallback={<Loading />}>
-          <Tickets />
-        </Suspense>
-      </LayOut>
+      <Suspense fallback={<Loading />}>
+        <Tickets />
+      </Suspense>
     </>
   );
 }

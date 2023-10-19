@@ -30,7 +30,7 @@ function Tickets() {
                     NFT Minting Status
                   </th>
                   <th scope="col" className="px-6 py-4">
-                    On-Chain Token ID
+                    On-Chain Token Class ID
                   </th>
                   <th scope="col" className="px-6 py-4">
                     Tx Hash

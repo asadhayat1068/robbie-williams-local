@@ -127,6 +127,5 @@ export const unlockToken = async (
     amount,
     data
   );
-  await updateTicketNFTStatus(tokenClassId, mintingStatus.MINTED);
   return token;
 };

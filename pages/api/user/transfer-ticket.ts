@@ -9,6 +9,7 @@ import { getTokenByTicketId } from "@/lib/helpers/token";
 import { createUser, findOrCreateUser, getUserData } from "@/lib/helpers/user";
 import { ZeroAddress, isAddress } from "ethers";
 import { NextApiRequest, NextApiResponse } from "next";
+import { mintingStatus } from "@/lib/configs/constants";
 
 export default async function handler(
   req: NextApiRequest,
@@ -55,7 +56,7 @@ export default async function handler(
 
       res.status(200).json({
         success: false,
-        error: "Service Under construction",
+        error: "Transfer Successful",
       });
       return;
     } catch (error: any) {
@@ -89,6 +90,7 @@ const handleTicketTransfer = async (
     } else {
       //If token is minted and toUser does not have valid wallet address, transfer token to admin to be claimed later
       tx = await lockToken(fromUser.address, `${token?.tokenClassId}`);
+      updateTicketNFTStatus(ticket.id, mintingStatus.UNCLAIMED);
       if (!tx) {
         throw new Error("Token transfer failed");
       }

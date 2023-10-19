@@ -3,7 +3,11 @@ import { createUser, getUserData, updateUser } from "@/lib/helpers/user";
 import { ZeroAddress } from "ethers";
 import { getUserTicketByEmail } from "@/lib/helpers/ticket";
 import { getTokenByTicketId } from "@/lib/helpers/token";
-import { mintTicket } from "@/lib/helpers/provider";
+import {
+  mintTicket,
+  unlockToken,
+  updateTicketNFTStatus,
+} from "@/lib/helpers/provider";
 import { mintingStatus } from "@/lib/configs/constants";
 
 export default async function handler(
@@ -51,8 +55,14 @@ export default async function handler(
       });
       return;
     }
-
     if (
+      ticket.nftStatus === mintingStatus.UNCLAIMED &&
+      ticket.tokens.length > 0
+    ) {
+      const token = ticket.tokens[0];
+      await unlockToken(user.address, `${token.tokenClassId}`);
+      updateTicketNFTStatus(ticket.id, mintingStatus.MINTED);
+    } else if (
       ticket.nftStatus === mintingStatus.UNCLAIMED ||
       ticket.nftStatus === mintingStatus.FAILED
     ) {
@@ -89,7 +99,7 @@ export default async function handler(
           ticketId: ticket.ticketId,
           nftStatus: ticket.nftStatus,
           token: {
-            id: token?.tokenId,
+            id: token?.tokenClassId,
             transactionHash: token?.txId,
           },
         },

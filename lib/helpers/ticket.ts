@@ -94,6 +94,9 @@ export const getUserTicketByEmail = async (
       id: ticketId,
       userId: userId,
     },
+    include: {
+      tokens: true,
+    },
   });
   if (!ticket) {
     return null;

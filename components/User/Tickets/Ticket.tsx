@@ -8,7 +8,7 @@ function Ticket({ ticket }: { ticket: any }) {
   const { authData } = useAuth();
   const ticketId = ticket.id;
   const txHash = ticket?.mintingQueue[0]?.transactionHash ?? "-";
-  const tokenId = ticket?.tokens[0]?.tokenId ?? "-";
+  const tokenClassId = ticket?.tokens[0]?.tokenClassId ?? "-";
   const [showTransfer, setShowTransfer] = useState(false);
   const [email, setEmail] = useState("");
 
@@ -40,7 +40,7 @@ function Ticket({ ticket }: { ticket: any }) {
           {ticket.ticketId}
         </td>
         <td className="whitespace-nowrap px-6 py-4">{ticket.nftStatus}</td>
-        <td className="whitespace-nowrap px-6 py-4">{tokenId}</td>
+        <td className="whitespace-nowrap px-6 py-4">{tokenClassId}</td>
         <td className="whitespace-nowrap px-6 py-4">{txHash}</td>
         <td className="whitespace-nowrap px-6 py-4">
           <button

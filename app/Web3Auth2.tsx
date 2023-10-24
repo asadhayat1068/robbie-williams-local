@@ -40,21 +40,21 @@ function App() {
             chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
             rpcTarget: process.env.NEXT_PUBLIC_ETHERS_JSONRPC_URL,
           },
+          web3AuthNetwork,
 
           // uiConfig refers to the whitelabeling options, which is available only on Growth Plan and above
-          // Please remove this parameter if you're on the Base Plan
-          uiConfig: {
-            appName: "Robbie Williams Event",
-            // appLogo: "https://web3auth.io/images/w3a-L-Favicon-1.svg", // Your App Logo Here
-            mode: "dark",
-            logoLight: "https://uploads-ssl.webflow.com/64fef47081a9f032eda73f65/650ae6b755c9d2d7ffd9f123_RW%20Logo%202-p-500.png",
-            logoDark: "https://uploads-ssl.webflow.com/64fef47081a9f032eda73f65/650ae6b755c9d2d7ffd9f123_RW%20Logo%202-p-500.png",
-            defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl
-            loginGridCol: 3,
-            loginMethodsOrder: ["blank", "apple", "google", "facebook", "twitter", "weibo", "wechat", "kakao"],
-            primaryButton: "emailLogin", // "externalLogin" | "socialLogin" | "emailLogin"
-          },
-          web3AuthNetwork,
+          // Please remove this parameter if you're on the Base Plan: WE ARE ON THE BASE PLAN FOR NOW
+          // uiConfig: {
+          //   appName: "Robbie Williams Event",
+          //   // appLogo: "https://web3auth.io/images/w3a-L-Favicon-1.svg", // Your App Logo Here
+          //   mode: "dark",
+          //   logoLight: "https://uploads-ssl.webflow.com/64fef47081a9f032eda73f65/650ae6b755c9d2d7ffd9f123_RW%20Logo%202-p-500.png",
+          //   logoDark: "https://uploads-ssl.webflow.com/64fef47081a9f032eda73f65/650ae6b755c9d2d7ffd9f123_RW%20Logo%202-p-500.png",
+          //   defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl
+          //   loginGridCol: 3,
+          //   loginMethodsOrder: ["blank", "apple", "google", "facebook", "twitter", "weibo", "wechat", "kakao"],
+          //   primaryButton: "emailLogin", // "externalLogin" | "socialLogin" | "emailLogin"
+          // },
         });
 
         // const openloginAdapter = new OpenloginAdapter({

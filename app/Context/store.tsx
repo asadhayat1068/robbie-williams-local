@@ -3,7 +3,7 @@
 import { IProvider } from "@web3auth/base";
 import { Web3Auth } from "@web3auth/modal";
 import { TorusWalletConnectorPlugin } from "@web3auth/torus-wallet-connector-plugin";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, ReactNode, SetStateAction } from "react";
 
 export type AuthDataType = {
   web3auth: Web3Auth;
@@ -33,7 +33,11 @@ const AuthContext = React.createContext<AuthContextProps>({
   setAuthData: () => ({} as Web3Auth),
 });
 
-export const AuthContextProvider: React.FC = ({ children }) => {
+interface AuthContextProviderProps {
+  children: ReactNode;
+}
+
+export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [authData, setAuthData] = React.useState<AuthDataType>({
     web3auth: {} as Web3Auth,
@@ -43,13 +47,7 @@ export const AuthContextProvider: React.FC = ({ children }) => {
     userName: "",
   });
 
-  return (
-    <AuthContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, authData, setAuthData }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, authData, setAuthData }}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => React.useContext(AuthContext);

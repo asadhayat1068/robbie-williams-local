@@ -45,7 +45,7 @@ function App() {
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
             chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
-            rpcTarget: process.env.ETHERS_JSONRPC_URL, // This is the public RPC we have added, please pass on your own endpoint while creating an app
+            rpcTarget: process.env.NEXT_PUBLIC_ETHERS_JSONRPC_URL, // This is the public RPC we have added, please pass on your own endpoint while creating an app
           },
           // uiConfig refers to the whitelabeling options, which is available only on Growth Plan and above
           // Please remove this parameter if you're on the Base Plan

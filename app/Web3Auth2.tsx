@@ -1,9 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Web3Auth } from "@web3auth/modal";
 import { CHAIN_NAMESPACES, IProvider } from "@web3auth/base";
-import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
-import Cookie from "js-cookie";
+import { Web3Auth } from "@web3auth/modal";
+import { useEffect, useState } from "react";
 import "./App.css";
 import RPC from "./web3RPC"; // for using web3.js
 //import RPC from "./ethersRPC"; // for using ethers.js
@@ -14,22 +12,16 @@ import { TorusWalletConnectorPlugin } from "@web3auth/torus-wallet-connector-plu
 // Adapters
 
 // import { WalletConnectV1Adapter } from "@web3auth/wallet-connect-v1-adapter";
-import { WalletConnectV2Adapter, getWalletConnectV2Settings } from "@web3auth/wallet-connect-v2-adapter";
 import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 import { TorusWalletAdapter } from "@web3auth/torus-evm-adapter";
-import { SupportedNetworks } from "@etherspot/prime-sdk/dist/sdk/network/constants";
-import { useAuth } from "./Context/store";
 import { redirect } from "next/navigation";
+import { useAuth } from "./Context/store";
 
 // TODO remove the backup altogher soon.
 const clientId =
   process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID || "BOuNxmtFKDLGksFd9Vtcaz_M4w0G3jOW8o7QoWBI0-_bu2WU1HE7HfQqs4gRvbcV9KDwFsMe5zrRF4S_YmJ_U4A"; // get from https://dashboard.web3auth.io
+const web3AuthNetwork: any = process.env.NEXT_PUBLIC_WEB3AUTH_NETWORK || "sapphire_mainnet";
 
-// function App({
-//   setAuthData: setAuthData,
-// }: {
-//   setAuthData: Dispatch<SetStateAction<IAuth | null>>;
-// }) {
 function App() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
   const [torusPlugin, setTorusPlugin] = useState<TorusWalletConnectorPlugin | null>(null);
@@ -45,83 +37,83 @@ function App() {
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
             chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
-            rpcTarget: process.env.NEXT_PUBLIC_ETHERS_JSONRPC_URL, // This is the public RPC we have added, please pass on your own endpoint while creating an app
+            rpcTarget: process.env.NEXT_PUBLIC_ETHERS_JSONRPC_URL,
           },
+
           // uiConfig refers to the whitelabeling options, which is available only on Growth Plan and above
           // Please remove this parameter if you're on the Base Plan
           uiConfig: {
-            appName: "W3A",
+            appName: "Robbie Williams Event",
             // appLogo: "https://web3auth.io/images/w3a-L-Favicon-1.svg", // Your App Logo Here
-            theme: {
-              primary: "red",
-            },
             mode: "dark",
-            logoLight: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
-            logoDark: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
+            logoLight: "https://uploads-ssl.webflow.com/64fef47081a9f032eda73f65/650ae6b755c9d2d7ffd9f123_RW%20Logo%202-p-500.png",
+            logoDark: "https://uploads-ssl.webflow.com/64fef47081a9f032eda73f65/650ae6b755c9d2d7ffd9f123_RW%20Logo%202-p-500.png",
             defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl
             loginGridCol: 3,
-            primaryButton: "externalLogin", // "externalLogin" | "socialLogin" | "emailLogin"
+            loginMethodsOrder: ["blank", "apple", "google", "facebook", "twitter", "weibo", "wechat", "kakao"],
+            primaryButton: "emailLogin", // "externalLogin" | "socialLogin" | "emailLogin"
           },
-          web3AuthNetwork: "testnet",
+          web3AuthNetwork,
         });
 
-        const openloginAdapter = new OpenloginAdapter({
-          loginSettings: {
-            mfaLevel: "optional",
-          },
-          adapterSettings: {
-            uxMode: "redirect", // "redirect" | "popup"
-            whiteLabel: {
-              logoLight: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
-              logoDark: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
-              defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl
-              // dark: false, // whether to enable dark mode. defaultValue: false
-            },
-            mfaSettings: {
-              deviceShareFactor: {
-                enable: true,
-                priority: 1,
-                mandatory: true,
-              },
-              backUpShareFactor: {
-                enable: true,
-                priority: 2,
-                mandatory: false,
-              },
-              socialBackupFactor: {
-                enable: true,
-                priority: 3,
-                mandatory: false,
-              },
-              passwordFactor: {
-                enable: true,
-                priority: 4,
-                mandatory: false,
-              },
-            },
-          },
-        });
-        web3auth.configureAdapter(openloginAdapter);
+        // const openloginAdapter = new OpenloginAdapter({
+        //   loginSettings: {
+        //     mfaLevel: "none",
+        //   },
+        //   adapterSettings: {
+        //     uxMode: "redirect", // "redirect" | "popup"
+        //     whiteLabel: {
+        //       logoLight: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
+        //       logoDark: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
+        //       defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl
+        //       // dark: false, // whether to enable dark mode. defaultValue: false
+        //     },
+
+        //     mfaSettings: {
+        //       deviceShareFactor: {
+        //         enable: false,
+        //         priority: 1,
+        //         mandatory: false,
+        //       },
+        //       backUpShareFactor: {
+        //         enable: false,
+        //         priority: 2,
+        //         mandatory: false,
+        //       },
+        //       socialBackupFactor: {
+        //         enable: false,
+        //         priority: 3,
+        //         mandatory: false,
+        //       },
+        //       passwordFactor: {
+        //         enable: false,
+        //         priority: 4,
+        //         mandatory: false,
+        //       },
+        //     },
+        //   },
+        // });
+        // web3auth.configureAdapter(openloginAdapter);
 
         // plugins and adapters are optional and can be added as per your requirement
         // read more about plugins here: https://web3auth.io/docs/sdk/web/plugins/
 
         // adding torus wallet connector plugin
 
-        const torusPlugin = new TorusWalletConnectorPlugin({
-          torusWalletOpts: {},
-          walletInitOptions: {
-            whiteLabel: {
-              theme: { isDark: true, colors: { primary: "#00a8ff" } },
-              logoDark: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
-              logoLight: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
-            },
-            useWalletConnect: true,
-            enableLogging: true,
-          },
-        });
-        setTorusPlugin(torusPlugin);
-        await web3auth.addPlugin(torusPlugin);
+        // const torusPlugin = new TorusWalletConnectorPlugin({
+        //   torusWalletOpts: {},
+        //   walletInitOptions: {
+        //     whiteLabel: {
+        //       theme: { isDark: true, colors: { primary: "#00a8ff" } },
+        //       logoDark: "https://web3auth.io/images/w3a-L-Favicon-1.svg",
+        //       logoLight: "https://web3auth.io/images/w3a-D-Favicon-1.svg",
+        //     },
+        //     useWalletConnect: true,
+        //     enableLogging: true,
+        //   },
+        // });
+        // setTorusPlugin(torusPlugin);
+        // await web3auth.addPlugin(torusPlugin);
 
         // read more about adapters here: https://web3auth.io/docs/sdk/web/adapters/
 
@@ -135,35 +127,25 @@ function App() {
 
         // web3auth.configureAdapter(walletConnectV1Adapter);
 
-        // adding wallet connect v2 adapter
-        const defaultWcSettings = await getWalletConnectV2Settings("eip155", [1], "04309ed1007e77d1f119b85205bb779d");
-        const walletConnectV2Adapter = new WalletConnectV2Adapter({
-          adapterSettings: { ...defaultWcSettings.adapterSettings },
-          loginSettings: { ...defaultWcSettings.loginSettings },
-        });
+        // // adding wallet connect v2 adapter
+        // const defaultWcSettings = await getWalletConnectV2Settings("eip155", [1], "04309ed1007e77d1f119b85205bb779d");
+        // const walletConnectV2Adapter = new WalletConnectV2Adapter({
+        //   adapterSettings: { ...defaultWcSettings.adapterSettings },
+        //   loginSettings: { ...defaultWcSettings.loginSettings },
+        // });
 
-        web3auth.configureAdapter(walletConnectV2Adapter);
+        // web3auth.configureAdapter(walletConnectV2Adapter);
 
         // adding metamask adapter
         const metamaskAdapter = new MetamaskAdapter({
           clientId,
           sessionTime: 3600, // 1 hour in seconds
-          web3AuthNetwork: "cyan",
+          web3AuthNetwork,
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: "0x1",
-            rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
+            chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
+            rpcTarget: process.env.NEXT_PUBLIC_ETHERS_JSONRPC_URL,
           },
-        });
-        // we can change the above settings using this function
-        metamaskAdapter.setAdapterSettings({
-          sessionTime: 86400, // 1 day in seconds
-          chainConfig: {
-            chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: "0x1",
-            rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
-          },
-          web3AuthNetwork: "cyan",
         });
 
         // it will add/update  the metamask adapter in to web3auth class

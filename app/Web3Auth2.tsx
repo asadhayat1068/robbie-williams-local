@@ -14,18 +14,16 @@ import { TorusWalletConnectorPlugin } from "@web3auth/torus-wallet-connector-plu
 // Adapters
 
 // import { WalletConnectV1Adapter } from "@web3auth/wallet-connect-v1-adapter";
-import {
-  WalletConnectV2Adapter,
-  getWalletConnectV2Settings,
-} from "@web3auth/wallet-connect-v2-adapter";
+import { WalletConnectV2Adapter, getWalletConnectV2Settings } from "@web3auth/wallet-connect-v2-adapter";
 import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 import { TorusWalletAdapter } from "@web3auth/torus-evm-adapter";
 import { SupportedNetworks } from "@etherspot/prime-sdk/dist/sdk/network/constants";
 import { useAuth } from "./Context/store";
 import { redirect } from "next/navigation";
 
+// TODO remove the backup altogher soon.
 const clientId =
-  "BOuNxmtFKDLGksFd9Vtcaz_M4w0G3jOW8o7QoWBI0-_bu2WU1HE7HfQqs4gRvbcV9KDwFsMe5zrRF4S_YmJ_U4A"; // get from https://dashboard.web3auth.io
+  process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID || "BOuNxmtFKDLGksFd9Vtcaz_M4w0G3jOW8o7QoWBI0-_bu2WU1HE7HfQqs4gRvbcV9KDwFsMe5zrRF4S_YmJ_U4A"; // get from https://dashboard.web3auth.io
 
 // function App({
 //   setAuthData: setAuthData,
@@ -34,8 +32,7 @@ const clientId =
 // }) {
 function App() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
-  const [torusPlugin, setTorusPlugin] =
-    useState<TorusWalletConnectorPlugin | null>(null);
+  const [torusPlugin, setTorusPlugin] = useState<TorusWalletConnectorPlugin | null>(null);
   const [provider, setProvider] = useState<IProvider | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const { setIsLoggedIn, setAuthData } = useAuth();
@@ -47,8 +44,8 @@ function App() {
           clientId,
           chainConfig: {
             chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: "0x1",
-            rpcTarget: "https://rpc.ankr.com/eth", // This is the public RPC we have added, please pass on your own endpoint while creating an app
+            chainId: process.env.NEXT_PUBLIC_WEB3AUTH_CHAIN_ID_HEX,
+            rpcTarget: process.env.ETHERS_JSONRPC_URL, // This is the public RPC we have added, please pass on your own endpoint while creating an app
           },
           // uiConfig refers to the whitelabeling options, which is available only on Growth Plan and above
           // Please remove this parameter if you're on the Base Plan
@@ -139,11 +136,7 @@ function App() {
         // web3auth.configureAdapter(walletConnectV1Adapter);
 
         // adding wallet connect v2 adapter
-        const defaultWcSettings = await getWalletConnectV2Settings(
-          "eip155",
-          [1],
-          "04309ed1007e77d1f119b85205bb779d"
-        );
+        const defaultWcSettings = await getWalletConnectV2Settings("eip155", [1], "04309ed1007e77d1f119b85205bb779d");
         const walletConnectV2Adapter = new WalletConnectV2Adapter({
           adapterSettings: { ...defaultWcSettings.adapterSettings },
           loginSettings: { ...defaultWcSettings.loginSettings },

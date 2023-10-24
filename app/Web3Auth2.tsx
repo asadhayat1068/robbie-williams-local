@@ -16,6 +16,7 @@ import { MetamaskAdapter } from "@web3auth/metamask-adapter";
 import { TorusWalletAdapter } from "@web3auth/torus-evm-adapter";
 import { redirect } from "next/navigation";
 import { useAuth } from "./Context/store";
+import { WalletConnectV2Adapter, getWalletConnectV2Settings } from "@web3auth/wallet-connect-v2-adapter";
 
 // TODO remove the backup altogher soon.
 const clientId =
@@ -127,14 +128,14 @@ function App() {
 
         // web3auth.configureAdapter(walletConnectV1Adapter);
 
-        // // adding wallet connect v2 adapter
-        // const defaultWcSettings = await getWalletConnectV2Settings("eip155", [1], "04309ed1007e77d1f119b85205bb779d");
-        // const walletConnectV2Adapter = new WalletConnectV2Adapter({
-        //   adapterSettings: { ...defaultWcSettings.adapterSettings },
-        //   loginSettings: { ...defaultWcSettings.loginSettings },
-        // });
+        // adding wallet connect v2 adapter
+        const defaultWcSettings = await getWalletConnectV2Settings("eip155", [256256], "672c60bfa91e58bed453055a76dc3f06");
+        const walletConnectV2Adapter = new WalletConnectV2Adapter({
+          adapterSettings: { ...defaultWcSettings.adapterSettings },
+          loginSettings: { ...defaultWcSettings.loginSettings },
+        });
 
-        // web3auth.configureAdapter(walletConnectV2Adapter);
+        web3auth.configureAdapter(walletConnectV2Adapter);
 
         // adding metamask adapter
         const metamaskAdapter = new MetamaskAdapter({

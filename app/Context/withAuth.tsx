@@ -9,7 +9,7 @@ export default function withAuth(Component: any) {
     const { isLoggedIn, authData } = useAuth();
     useEffect(() => {
       if (!isLoggedIn || !authData.jwt) {
-        redirect("/login");
+        redirect("/");
       }
     }, [isLoggedIn, authData.jwt]);
 

@@ -42,6 +42,7 @@
     "next": "^13.5.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-eventbrite-popup-checkout": "^2.0.13",
     "react-router-dom": "^6.16.0",
     "rxjs": "^7.8.1",
     "sort-by": "^0.0.2",

@@ -10,6 +10,7 @@ import App from "@/app/Web3Auth2";
 const navigation = [
   { name: "Dashboard", href: "/user" },
   { name: "Tickets", href: "/user/tickets" },
+  { name: "Buy Tickets", href: "/user/buy-ticket" },
   // { name: "Company", href: "#" },
 ];
 

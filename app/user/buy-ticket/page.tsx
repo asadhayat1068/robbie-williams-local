@@ -18,7 +18,7 @@ function TicketsPage() {
       <Suspense fallback={<Loading />}>
         {modalButtonCheckout && (
           <button
-            className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-white bg-primary hover:bg-gray-800"
+            className="-mx-4 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-white bg-primary hover:bg-gray-800"
             id={modalButtonCheckout.id}
             type="button"
           >

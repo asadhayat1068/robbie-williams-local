@@ -37,7 +37,9 @@ interface AuthContextProviderProps {
   children: ReactNode;
 }
 
-export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ children }) => {
+export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
+  children,
+}) => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [authData, setAuthData] = React.useState<AuthDataType>({
     web3auth: {} as Web3Auth,
@@ -47,7 +49,13 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
     userName: "",
   });
 
-  return <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, authData, setAuthData }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{ isLoggedIn, setIsLoggedIn, authData, setAuthData }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => React.useContext(AuthContext);

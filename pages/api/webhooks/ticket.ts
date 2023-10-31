@@ -7,9 +7,13 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const resp = await processTicket(req.body);
-    // const _resp = await addData(req.body);
-    res.status(200).json(resp);
+    try {
+      const resp = await processTicket(req.body);
+      // const _resp = await addData(req.body);
+      res.status(200).json(resp);
+    } catch (error) {
+      res.status(500).json({ error });
+    }
   }
   if (req.method === "GET") {
     // await processTicket();

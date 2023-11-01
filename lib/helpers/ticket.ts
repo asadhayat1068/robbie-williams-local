@@ -5,7 +5,7 @@ import { getUserData, createUser } from "./user";
 import { Order } from "../types/Order.type";
 import { Ticket } from "../types/Ticket.type";
 import { mintingStatus } from "../configs/constants";
-import { mintTicket } from "./provider";
+import { TICKET_TYPES, mintTicket } from "./provider";
 import { ZeroAddress } from "ethers";
 
 export const processTicket = async (data: any) => {
@@ -68,11 +68,14 @@ const processAttendee = async (orderId: string, attendee: any) => {
     },
   });
   if (user?.address && user?.address != ZeroAddress) {
+    const ticketName: string = attendee.ticket_class_name || "";
+    const ticketClassId = TICKET_TYPES[ticketName];
+    const quantity = attendee.quantity;
     const tx = await mintTicket(
       ticket.id,
       user.address,
-      1, // TODO: ticketClassId
-      1 //TODO: ticketNumber
+      ticketClassId, // ticketClassId
+      quantity //amount
     );
   }
 };

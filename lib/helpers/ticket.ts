@@ -5,7 +5,7 @@ import { getUserData, createUser } from "./user";
 import { Order } from "../types/Order.type";
 import { Ticket } from "../types/Ticket.type";
 import { mintingStatus } from "../configs/constants";
-import { TICKET_TYPES, mintTicket } from "./provider";
+import { TICKET_TYPES, mintTicket, updateTicketNFTStatus } from "./provider";
 import { ZeroAddress } from "ethers";
 
 export const processTicket = async (data: any) => {
@@ -17,7 +17,7 @@ export const processTicket = async (data: any) => {
   if (action === "order.placed") {
     const resp = await axios.get(order_api_url);
     const ebOrder = resp.data;
-    const { name, email } = ebOrder;
+    const { name, email, event_id } = ebOrder;
     let user;
     if (ebOrder.status === "placed") {
       user = await getUserData(email);
@@ -77,6 +77,8 @@ const processAttendee = async (orderId: string, attendee: any) => {
       ticketClassId, // ticketClassId
       quantity //amount
     );
+  } else {
+    updateTicketNFTStatus(ticket.id, mintingStatus.UNCLAIMED);
   }
 };
 
